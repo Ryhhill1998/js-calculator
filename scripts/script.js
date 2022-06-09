@@ -19,15 +19,3 @@ const calculate = function(num1, num2, symbol = "+") {
 
 let nums = [];
 let symbol;
-
-const updateNums = function(input) {
-  if (symbol === undefined) {
-    nums[0] += input;
-  } else {
-    nums[1] += input;
-  }
-};
-
-const updateSymbol = function(input) {
-  if (nums.length === 2) calculate((...nums), symbol);
-}
