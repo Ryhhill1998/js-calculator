@@ -23,15 +23,16 @@ const operationBtns = document.querySelectorAll(".operation");
 let nums = [];
 let symbol = "+";
 let currentNum = "";
+let heldResult;
 
 const calculate = function(num1 = 0, num2 = 0, symbol) {
   const operation = operationMap.get(symbol);
   return operation(num1, num2);
 };
 
-const updateNumsAfterCalc = function(result, array) {
-  array.pop();
-  array[0] = result;
+const updateAfterCalc = function(result) {
+  nums = [];
+  heldResult = result;
 };
 
 
@@ -40,21 +41,25 @@ const updateDisplay = value => display.textContent = value;
 
 numberBtns.forEach(function(btn) {
   btn.addEventListener("click", function() {
-
     if (display.textContent.length === 8) return;
     const numClicked = this.textContent;
-    currentNum += numClicked;
+    if (heldResult === undefined && nums.length === 0) {
+      currentNum = numClicked;
+      heldResult === undefined;
+    } else {
+      currentNum += numClicked;
+    }
     updateDisplay(currentNum);
   });
 });
 
-for (const btn of operationBtns) {
+operationBtns.forEach(function(btn) {
   if (btn.textContent === "=") {
     btn.addEventListener("click", function() {
       nums.push(Number(currentNum));
-      currentNum = "";
       const result = calculate(...nums, symbol);
-      updateNumsAfterCalc(result, nums);
+      currentNum = result;
+      updateAfterCalc(result);
       updateDisplay(result);
     });
   } else {
@@ -66,10 +71,10 @@ for (const btn of operationBtns) {
 
       if (nums.length === 2) {
         const result = calculate(...nums, symbol);
-        updateNumsAfterCalc(result, nums);
+        updateAfterCalc(result, nums);
         updateDisplay(result);
       }
       symbol = opClicked;
     });
   }
-}
+});
