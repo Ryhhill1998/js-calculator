@@ -64,6 +64,7 @@ main {
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
 }
 
 .zero {
@@ -77,4 +78,8 @@ main {
 
 .operation {
   background-color: #B83B5E;
+}
+
+.operation-clicked {
+  background-color: rgba(184, 59, 94, 0.5);
 }

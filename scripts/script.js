@@ -14,18 +14,18 @@ const operationMap = new Map([
 
 // ---------- DOM OBJECTS ---------- //
 const display = document.querySelector(".display");
+const allBtns = document.querySelectorAll("button");
 const numberBtns = document.querySelectorAll(".number");
 const operationBtns = document.querySelectorAll(".operation");
-
+const clearBtn = document.getElementById("clear");
+const changeSignBtn = document.getElementById("change-sign");
+const percentageBtn = document.getElementById("percentage");
 
 
 // ---------- BACKEND CALCULATIONS ---------- //
-let nums = [];
-let symbol = "+";
-let currentNum = "";
-let heldResult;
+let nums, symbol, currentNum, heldResult;
 
-const calculate = function(num1 = 0, num2 = 0, symbol) {
+const calculate = function(num1 = 0, num2 = 0, symbol = "+") {
   const operation = operationMap.get(symbol);
   return operation(num1, num2);
 };
@@ -36,16 +36,62 @@ const updateAfterCalc = function(result) {
 };
 
 
-// ---------- CALCULATOR FUNCTIONALITY  ---------- //
+// ---------- CALCULATOR FUNCTIONALITY ---------- //
 const updateDisplay = value => display.textContent = value;
+
+const highlightBtnClicked = function(btn) {
+  btn.classList.add("operation-clicked");
+};
+
+const reduceResult = function(result) {
+  const part1 = String(result).split(".")[0];
+  const decimalPlaces = 8 - part1.length;
+  return result.toFixed(decimalPlaces);
+};
+
+const performCalculation = function(btnClicked) {
+  let result = calculate(...nums, symbol);
+  updateAfterCalc(result);
+
+  if (btnClicked === "=") {
+    currentNum = result;
+  } else {
+    nums.push(result);
+  }
+  
+  if (String(result).length > 8) result = reduceResult(result);
+
+  updateDisplay(result);
+};
+
+
+
+const resetCalculator = function() {
+  nums = [];
+  symbol = "+";
+  currentNum = "";
+  heldResult = undefined;
+  updateDisplay(0);
+};
+
+resetCalculator();
+
+// ---------- BUTTON EVENT LISTENERS ---------- //
+allBtns.forEach(function(btn) {
+  btn.addEventListener("click", function() {
+    operationBtns.forEach(function(opBtn) {
+      opBtn.classList.remove("operation-clicked");
+    });
+  });
+});
 
 numberBtns.forEach(function(btn) {
   btn.addEventListener("click", function() {
-    if (display.textContent.length === 8) return;
+    if (currentNum.length === 8) return;
     const numClicked = this.textContent;
-    if (heldResult === undefined && nums.length === 0) {
+    if (heldResult !== undefined && nums.length === 0) {
       currentNum = numClicked;
-      heldResult === undefined;
+      heldResult = undefined;
     } else {
       currentNum += numClicked;
     }
@@ -56,25 +102,31 @@ numberBtns.forEach(function(btn) {
 operationBtns.forEach(function(btn) {
   if (btn.textContent === "=") {
     btn.addEventListener("click", function() {
-      nums.push(Number(currentNum));
-      const result = calculate(...nums, symbol);
-      currentNum = result;
-      updateAfterCalc(result);
-      updateDisplay(result);
+      if (currentNum !== "") nums.push(Number(currentNum));
+      if (nums.length === 2) {
+        performCalculation(this.textContent);
+      }
     });
   } else {
     btn.addEventListener("click", function() {
 
-      nums.push(Number(currentNum));
+      highlightBtnClicked(btn);
+
+      if (currentNum !== "") nums.push(Number(currentNum));
       currentNum = "";
       const opClicked = this.textContent;
 
       if (nums.length === 2) {
-        const result = calculate(...nums, symbol);
-        updateAfterCalc(result, nums);
-        updateDisplay(result);
+        performCalculation(this.textContent);
       }
       symbol = opClicked;
     });
   }
+});
+
+clearBtn.addEventListener("click", () => resetCalculator());
+
+changeSignBtn.addEventListener("click", function() {
+  currentNum = `${-Number(currentNum)}`;
+  updateDisplay(currentNum);
 });
