@@ -39,32 +39,17 @@ const updateAfterCalc = function(result) {
 // ---------- CALCULATOR FUNCTIONALITY ---------- //
 const updateDisplay = value => display.textContent = value;
 
-const highlightBtnClicked = function(btn) {
-  btn.classList.add("operation-clicked");
+const highlightBtnClicked = btn => btn.classList.add("operation-clicked");
+
+const reduceNumber = function(num) {
+  const part1 = String(num).split(".")[0];
+  const decimalPlaces = 9 - part1.length;
+  return decimalPlaces >= 0 ? num.toFixed(decimalPlaces) : num.toExponential(5).replace("+", "");
 };
 
-const reduceResult = function(result) {
-  const part1 = String(result).split(".")[0];
-  const decimalPlaces = 8 - part1.length;
-  return decimalPlaces >= 0 ? result.toFixed(decimalPlaces) : result;
-};
+const addCommas = num => num.toLocaleString();
 
-const addCommaSeparators = function(result) {
-  let [part1, part2] = String(result).split(".");
-  if (part2) part2 = "." + part2;
-  if (part1.length <= 3) return result;
-  const integerDigits = part1.split("");
-  integerDigits.reverse();
-  let commaCount = 0;
-  for (let i = 0; i < integerDigits.length; i++) {
-    if (i > 0 && i % 3 === 0 && i + commaCount < integerDigits.length) {
-      integerDigits.splice(i + commaCount, 0, ",");
-      commaCount++;
-    }
-  }
-  integerDigits.reverse();
-  return [...integerDigits, part2].join("");
-};
+const formatNumberForDisplay = num => String(num).length > 9 ? reduceNumber(num) : addCommas(num);
 
 const performCalculation = function(btnClicked) {
   let result = calculate(...nums, symbol);
@@ -76,12 +61,8 @@ const performCalculation = function(btnClicked) {
     nums.push(result);
   }
 
-  if (String(result).length > 8) result = reduceResult(result);
-  const commasAdded = addCommaSeparators(result);
-  updateDisplay(commasAdded);
+  updateDisplay(formatNumberForDisplay(result));
 };
-
-
 
 const resetCalculator = function() {
   nums = [];
@@ -104,7 +85,7 @@ allBtns.forEach(function(btn) {
 
 numberBtns.forEach(function(btn) {
   btn.addEventListener("click", function() {
-    if (currentNum.length === 8) return;
+    if (currentNum.length === 9) return;
     const numClicked = this.textContent;
     if (heldResult !== undefined && nums.length === 0) {
       currentNum = numClicked;
@@ -112,7 +93,9 @@ numberBtns.forEach(function(btn) {
     } else {
       currentNum += numClicked;
     }
-    updateDisplay(addCommaSeparators(currentNum));
+
+    const formattedNum = Number(currentNum).toLocaleString();
+    updateDisplay(formattedNum);
   });
 });
 
@@ -145,5 +128,5 @@ clearBtn.addEventListener("click", () => resetCalculator());
 
 changeSignBtn.addEventListener("click", function() {
   currentNum = `${-Number(currentNum)}`;
-  updateDisplay(currentNum);
+  updateDisplay(formatNumberForDisplay(Number(currentNum)));
 });
