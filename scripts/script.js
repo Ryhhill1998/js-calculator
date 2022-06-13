@@ -112,7 +112,7 @@ numberBtns.forEach(function(btn) {
     } else {
       currentNum += numClicked;
     }
-    updateDisplay(currentNum);
+    updateDisplay(addCommaSeparators(currentNum));
   });
 });
 
