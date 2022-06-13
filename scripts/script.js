@@ -46,7 +46,24 @@ const highlightBtnClicked = function(btn) {
 const reduceResult = function(result) {
   const part1 = String(result).split(".")[0];
   const decimalPlaces = 8 - part1.length;
-  return result.toFixed(decimalPlaces);
+  return decimalPlaces >= 0 ? result.toFixed(decimalPlaces) : result;
+};
+
+const addCommaSeparators = function(result) {
+  let [part1, part2] = String(result).split(".");
+  if (part2) part2 = "." + part2;
+  if (part1.length <= 3) return result;
+  const integerDigits = part1.split("");
+  integerDigits.reverse();
+  let commaCount = 0;
+  for (let i = 0; i < integerDigits.length; i++) {
+    if (i > 0 && i % 3 === 0 && i + commaCount < integerDigits.length) {
+      integerDigits.splice(i + commaCount, 0, ",");
+      commaCount++;
+    }
+  }
+  integerDigits.reverse();
+  return [...integerDigits, part2].join("");
 };
 
 const performCalculation = function(btnClicked) {
@@ -58,10 +75,10 @@ const performCalculation = function(btnClicked) {
   } else {
     nums.push(result);
   }
-  
-  if (String(result).length > 8) result = reduceResult(result);
 
-  updateDisplay(result);
+  if (String(result).length > 8) result = reduceResult(result);
+  const commasAdded = addCommaSeparators(result);
+  updateDisplay(commasAdded);
 };
 
 
