@@ -1,8 +1,11 @@
 
-body {
-  height: 100vh;
+html {
   font-family: 'Roboto', sans-serif;
   font-size: 1rem;
+}
+
+body {
+  height: 100vh;
   background-image: linear-gradient(to top left, #F9ED69 50%, #6A2C70 50%);
   display: flex;
   align-items: center;
@@ -21,36 +24,29 @@ main {
   flex-direction: column;
 }
 
-.calculator {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.screen {
-  padding: 0 9.5% 5%;
+.calculator-screen {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  justify-content: end;
+  align-content: end;
   height: 20%;
-  display: flex;
-  align-items: flex-end;
-  justify-content: flex-start;
 }
 
 .display {
-  font-size: 3.2rem;
+  grid-column: 1 / span 4;
+  text-align: right;
+  padding: 0 9%;
+  font-family: inherit;
+  font-size: 4rem;
 }
 
-.buttons {
+.calculator-buttons {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+  place-items: center;
   height: 80%;
-  padding-bottom: 3%;
-}
-
-.button-row {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  padding: 0 3% 4%;
 }
 
 .button {
@@ -58,7 +54,6 @@ main {
   height: 65px;
   border: none;
   border-radius: 50%;
-  margin: 5px;
   background-color: #F08A5D;
   font-size: 1.2rem;
   display: flex;
@@ -69,6 +64,7 @@ main {
 
 .zero {
   width: 140px;
+  grid-column: 1 / span 2;
   border-radius: 16px;
 }
 

@@ -7,49 +7,46 @@
   <link rel="stylesheet" href="css/style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.1.1/css/all.css" integrity="sha384-/frq1SRXYH/bSyou/HUp/hib7RVN1TawQYja658FEOodR/FQBKVqT9Ol+Oz3Olq5" crossorigin="anonymous">
   <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
 </head>
 
 <body>
 
-  <main>
-    <div class="calculator screen">
-      <h2 class="display">0</h2>
-    </div>
-    <div class="calculator buttons">
-      <div class="button-row row1">
-        <button id="clear" class="button">AC</button>
-        <button id="change-sign" class="button">-/+</button>
-        <button id="percentage" class="button">%</button>
-        <button class="button operation">/</button>
-      </div>
-      <div class="button-row row2">
-        <button class="button number">7</button>
-        <button class="button number">8</button>
-        <button class="button number">9</button>
-        <button class="button operation">*</button>
-      </div>
-      <div class="button-row row3">
-        <button class="button number">4</button>
-        <button class="button number">5</button>
-        <button class="button number">6</button>
-        <button class="button operation">-</button>
-      </div>
-      <div class="button-row row4">
-        <button class="button number">1</button>
-        <button class="button number">2</button>
-        <button class="button number">3</button>
-        <button class="button operation">+</button>
-      </div>
-      <div class="button-row row5">
-        <button class="button number zero">0</button>
-        <button class="button number">.</button>
-        <button class="button operation">=</button>
-      </div>
-    </div>
-  </main>
+<main>
+  <div class="calculator-screen">
+    <div class="display">0</div>
+  </div>
+  <div class="calculator-buttons">
 
-  <script src="scripts/script.js" charset="utf-8"></script>
+      <button id="clear" class="button" type="button" name="button"><i class="fa-solid fa-ban"></i></button>
+      <button id="change-sign" class="button" type="button" name="button">-/+</button>
+      <button id="percentage" class="button" type="button" name="button"><i class="fa-solid fa-percent"></i></button>
+      <button class="button operation divide" type="button" value="divide" name="button"><i class="fa-solid fa-divide"></i></button>
+
+      <button class="button number" type="button" name="button">7</button>
+      <button class="button number" type="button" name="button">8</button>
+      <button class="button number" type="button" name="button">9</button>
+      <button class="button operation multiply" type="button" value="multiply" name="button"><i class="fa-solid fa-xmark"></i></button>
+
+      <button class="button number" type="button" name="button">4</button>
+      <button class="button number" type="button" name="button">5</button>
+      <button class="button number" type="button" name="button">6</button>
+      <button class="button operation" type="button" value="subtract" name="button"><i class="fa-solid fa-minus"></i></button>
+
+      <button class="button number" type="button" name="button">1</button>
+      <button class="button number" type="button" name="button">2</button>
+      <button class="button number" type="button" name="button">3</button>
+      <button class="button operation" type="button" value="add" name="button"><i class="fa-solid fa-plus"></i></button>
+
+      <button class="button number zero" type="button" name="button">0</button>
+      <button class="button number" type="button" name="button">.</button>
+      <button class="button operation" type="button" value="equals" name="button"><i class="fa-solid fa-equals"></i></button>
+
+  </div>
+</main>
+
+<script src="scripts/script.js" charset="utf-8"></script>
 </body>
 
 </html>
