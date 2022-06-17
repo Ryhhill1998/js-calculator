@@ -73,15 +73,13 @@ const addCommas = (num, sign = "") => {
 };
 
 // change display font-size properties depending on number
-const formatDisplayForNumber = num => {
-  const digits = num.split(",").join("").split(".").join("");
-  if (digits.length === 7) {
-    display.style.fontSize = "3.8rem";
-  } else if (digits.length === 8) {
-    display.style.fontSize = "3.4rem";
-  } else if (digits.length === 9) {
-    display.style.fontSize = "3rem";
-  }
+const formatFontSize = () => {
+  const maxWidth = 262;
+  const displayWidth = display.offsetWidth;
+  if (displayWidth > maxWidth) {
+    const currFontSize = Number(display.style.fontSize.replace("rem", ""));
+    display.style.fontSize = `${currFontSize * (maxWidth / displayWidth)}rem`;
+  };
 };
 
 // function to perform calculation and update display
@@ -100,8 +98,8 @@ const performCalculation = function(btnClicked) {
 
   if (stringResult.length > 9) result = reduceNumber(Number(stringResult), result < 0 ? "-" : "");
   result = addCommas(String(result), Number(result) < 0 ? "-" : "");
-  formatDisplayForNumber(result);
   updateDisplay(result);
+  formatFontSize();
 };
 
 // reset calculator when clear button clicked
@@ -146,8 +144,8 @@ numberBtns.forEach(function(btn) {
     if (currentNum === ".") currentNum = "0.";
 
     const formattedNum = addCommas(currentNum);
-    formatDisplayForNumber(formattedNum);
     updateDisplay(formattedNum);
+    formatFontSize();
   });
 });
 

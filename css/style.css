@@ -25,16 +25,13 @@ main {
 }
 
 .calculator-screen {
-  display: grid;
-  grid-template-columns: 1fr;
-  justify-content: end;
-  align-content: end;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
   height: 20%;
 }
 
 .display {
-  grid-column: 1 / span 4;
-  text-align: right;
   margin: 0 1.8rem;
   font-family: inherit;
   font-size: 4rem;
