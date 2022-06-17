@@ -122,6 +122,8 @@ allBtns.forEach(function(btn) {
     operationBtns.forEach(function(opBtn) {
       opBtn.classList.remove("operation-clicked");
     });
+    this.classList.add("button-clicked");
+    setTimeout(() => this.classList.remove("button-clicked"), 100);
   });
 });
 

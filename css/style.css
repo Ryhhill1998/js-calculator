@@ -2,6 +2,7 @@
 html {
   font-family: 'Roboto', sans-serif;
   font-size: 1rem;
+  color: black;
 }
 
 body {
@@ -14,8 +15,8 @@ body {
 
 main {
   position: relative;
-  width: 320px;
-  height: 500px;
+  width: 20rem;
+  height: 32rem;
   background-color: white;
   box-shadow: 0 3rem 5rem rgba(0, 0, 0, 0.7);
   border-radius: 12px;
@@ -47,8 +48,9 @@ main {
 }
 
 .button {
-  width: 65px;
-  height: 65px;
+  color: inherit;
+  width: 87%;
+  height: 87%;
   border: none;
   border-radius: 50%;
   background-color: #F08A5D;
@@ -57,6 +59,10 @@ main {
   align-items: center;
   justify-content: center;
   cursor: pointer;
+}
+
+.button-clicked {
+  box-shadow: 3px 2px 15px 1px rgba(0, 0, 0, 0.24);
 }
 
 .zero {
@@ -71,8 +77,17 @@ main {
 
 .operation {
   background-color: #B83B5E;
+  color: white;
 }
 
 .operation-clicked {
   background-color: rgba(184, 59, 94, 0.5);
+  color: black;
+}
+
+
+ /* --------------- MEDIA QUERIES --------------- */
+
+@media (max-width: 600px) {
+
 }
