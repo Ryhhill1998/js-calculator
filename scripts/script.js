@@ -53,7 +53,7 @@ const reduceNumber = function(num, sign = "") {
     return String(Number(number).toFixed(4)) + "e" + exponent;
   }
   const decimalPlaces = 9 - integers.length;
-  return sign + (decimalPlaces >= 0 ? num.toFixed(decimalPlaces) : num.toExponential(5).replace("+", ""));
+  return sign + (decimalPlaces >= 0 ? num.toFixed(decimalPlaces) : num.toExponential(5));
 };
 
 // add comma separators to large non-decimal numbers
@@ -74,12 +74,12 @@ const addCommas = (num, sign = "") => {
 
 // change display font-size properties depending on number
 const formatFontSize = () => {
+  display.style.fontSize = "4rem";
   const maxWidth = 262;
-  const displayWidth = display.offsetWidth;
-  if (displayWidth > maxWidth) {
-    const currFontSize = Number(display.style.fontSize.replace("rem", ""));
-    display.style.fontSize = `${currFontSize * (maxWidth / displayWidth)}rem`;
-  };
+  const maxHeight = 110;
+  const [displayWidth, displayHeight] = [display.offsetWidth, display.offsetHeight];
+  if (displayWidth > maxWidth) display.style.fontSize = `${4 * (maxWidth / displayWidth)}rem`;
+  if (displayHeight > maxHeight) display.style.fontSize = `${4 * (maxHeight / displayHeight)}rem`;
 };
 
 // function to perform calculation and update display
@@ -186,4 +186,5 @@ changeSignBtn.addEventListener("click", function() {
   currentNum = `${-Number(currentNum)}`;
   const updatedDisplayContent = display.textContent.startsWith("-") ? display.textContent.slice(1) : "-" + display.textContent;
   updateDisplay(updatedDisplayContent);
+  formatFontSize();
 });
