@@ -13,7 +13,7 @@ body {
   justify-content: center;
 }
 
-main {
+.calculator {
   position: relative;
   width: 20rem;
   height: 32rem;
@@ -33,7 +33,7 @@ main {
 }
 
 .display {
-  margin: 0 1.8rem;
+  margin: 0 9.3%;
   font-family: inherit;
   font-size: 4rem;
 }
@@ -66,7 +66,7 @@ main {
 }
 
 .zero {
-  width: 140px;
+  width: 90%;
   grid-column: 1 / span 2;
   border-radius: 16px;
 }
@@ -89,5 +89,11 @@ main {
  /* --------------- MEDIA QUERIES --------------- */
 
 @media (max-width: 600px) {
-
+  .calculator {
+    width: 72vw;
+    height: 83vh;
+  }
+  .display {
+    margin: 0 10%;
+  }
 }
