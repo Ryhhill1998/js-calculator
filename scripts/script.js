@@ -19,18 +19,20 @@ const numberBtns = document.querySelectorAll(".number");
 const operationBtns = document.querySelectorAll(".operation");
 const clearBtn = document.getElementById("clear");
 const changeSignBtn = document.getElementById("change-sign");
-const percentageBtn = document.getElementById("percentage");
+const powerBtn = document.getElementById("power");
 
 
 // ---------- BACKEND CALCULATIONS ---------- //
 let nums, symbol, currentNum, heldResult;
 
-const calculate = function(num1, num2, symbol) {
+let powerOn = false;
+
+const calculate = (num1, num2, symbol) => {
   const operation = operationMap.get(symbol);
   return operation(num1, num2);
 };
 
-const updateAfterCalc = function(result) {
+const updateAfterCalc = result => {
   nums = [];
   heldResult = result;
 };
@@ -45,7 +47,7 @@ const updateDisplay = value => display.textContent = value;
 const highlightBtnClicked = btn => btn.classList.add("operation-clicked");
 
 // reduce number by rounding if it is too large to be displayed properly
-const reduceNumber = function(num, sign = "") {
+const reduceNumber = (num, sign = "") => {
   if (sign === "-") num = Number(String(num).slice(1));
   const [integers, decimals] = String(num).split(".");
   if (decimals !== undefined && decimals.includes("e")) {
@@ -83,7 +85,7 @@ const formatFontSize = () => {
 };
 
 // function to perform calculation and update display
-const performCalculation = function(btnClicked) {
+const performCalculation = btnClicked => {
   let result = calculate(...nums, symbol);
   updateAfterCalc(result);
 
@@ -103,7 +105,7 @@ const performCalculation = function(btnClicked) {
 };
 
 // reset calculator when clear button clicked
-const resetCalculator = function() {
+const resetCalculator = () => {
   nums = [];
   symbol = "+";
   currentNum = "";
@@ -112,7 +114,27 @@ const resetCalculator = function() {
   updateDisplay(0);
 };
 
-resetCalculator();
+// power off calculator
+const powerOffCalculator = () => {
+  powerOn = false;
+  resetCalculator();
+  allBtns.forEach(btn => {
+    if (btn.id !== "power") btn.disabled = true;
+  });
+  display.style.opacity = 0;
+};
+
+powerOffCalculator();
+
+// power on calculator
+const powerOnCalculator = () => {
+  powerOn = true;
+  allBtns.forEach(btn => {
+    if (btn.id !== "power") btn.disabled = false;
+  });
+  display.style.opacity = 1;
+};
+
 
 // ---------- BUTTON EVENT LISTENERS ---------- //
 
@@ -190,3 +212,5 @@ changeSignBtn.addEventListener("click", function() {
   updateDisplay(updatedDisplayContent);
   formatFontSize();
 });
+
+powerBtn.addEventListener("click", () => powerOn ? powerOffCalculator() : powerOnCalculator());
