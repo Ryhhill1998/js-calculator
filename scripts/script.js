@@ -47,61 +47,46 @@ const updateDisplay = value => display.textContent = value;
 const highlightBtnClicked = btn => btn.classList.add("operation-clicked");
 
 // reduce number by rounding if it is too large to be displayed properly
-const reduceNumber = (num, sign = "") => {
-  if (sign === "-") num = Number(String(num).slice(1));
-  const [integers, decimals] = String(num).split(".");
-  if (decimals !== undefined && decimals.includes("e")) {
-    const [number, exponent] = String(num).split("e");
-    return String(Number(number).toFixed(4)) + "e" + exponent;
-  }
-  const decimalPlaces = 9 - integers.length;
-  return sign + (decimalPlaces >= 0 ? num.toFixed(decimalPlaces) : num.toExponential(5));
-};
-
-// add comma separators to large non-decimal numbers
-const addCommas = (num, sign = "") => {
-  if (sign === "-") num = num.replace("-", "");
-  let [integers, decimals] = num.split(".");
-  const digits = integers.split("");
-  digits.reverse();
-  let commaCount = 0;
-  for (let i = 0; i + commaCount < digits.length; i++) {
-    if (i > 0 && i % 3 === 0) {
-      digits.splice((i + commaCount), 0, ",");
-      commaCount++;
-    }
-  }
-  return sign + (decimals === undefined ? digits.reverse().join("") : [...digits.reverse(), ".", ...decimals].join(""));
+const reduceNumber = num => {
+  const integers = String(num).split(".")[0];
+  return (integers.length > 9 || String(num).includes("e")) ? num.toExponential(5) : num.toPrecision(9);
 };
 
 // change display font-size properties depending on number
 const formatFontSize = () => {
   display.style.fontSize = "4rem";
-  const maxWidth = 262;
-  const maxHeight = 110;
+  const [maxWidth, maxHeight] = [262, 110];
   const [displayWidth, displayHeight] = [display.offsetWidth, display.offsetHeight];
   if (displayWidth > maxWidth) display.style.fontSize = `${4 * (maxWidth / displayWidth)}rem`;
   if (displayHeight > maxHeight) display.style.fontSize = `${4 * (maxHeight / displayHeight)}rem`;
+};
+
+// display number functio1n
+const displayNum = num => {
+  const stringNum = String(num);
+  console.log(stringNum.length > 9);
+  let reducedNum = stringNum.length > 9 ? reduceNumber(num) : stringNum;
+  console.log(reducedNum);
+  if (!reducedNum.includes("e")) {
+    const options = {
+      minimumSignificantDigits: reducedNum.replace(".", "").replace("-", "").length,
+    };
+    reducedNum = new Intl.NumberFormat("en-GB", options).format(reducedNum);
+  }
+  updateDisplay(reducedNum);
+  formatFontSize();
 };
 
 // function to perform calculation and update display
 const performCalculation = btnClicked => {
   let result = calculate(...nums, symbol);
   updateAfterCalc(result);
-
   if (btnClicked === "=") {
     currentNum = String(result);
   } else {
     nums.push(result);
   }
-
-  let stringResult = String(result);
-  if (result < 0) stringResult = stringResult.slice(1);
-
-  if (stringResult.length > 9) result = reduceNumber(Number(stringResult), result < 0 ? "-" : "");
-  result = addCommas(String(result), Number(result) < 0 ? "-" : "");
-  updateDisplay(result);
-  formatFontSize();
+  displayNum(result);
 };
 
 // reset calculator when clear button clicked
@@ -138,7 +123,7 @@ const powerOnCalculator = () => {
 
 // ---------- BUTTON EVENT LISTENERS ---------- //
 
-// removes a buttons highlight when another button is clicked
+// removes highlight from all buttons when another button is clicked
 allBtns.forEach(function(btn) {
   btn.addEventListener("click", function() {
     operationBtns.forEach(function(opBtn) {
@@ -165,11 +150,7 @@ numberBtns.forEach(function(btn) {
       currentNum += numClicked;
     }
 
-    if (currentNum === ".") currentNum = "0.";
-
-    const formattedNum = addCommas(currentNum);
-    updateDisplay(formattedNum);
-    formatFontSize();
+    displayNum(+currentNum);
   });
 });
 
@@ -177,7 +158,6 @@ numberBtns.forEach(function(btn) {
 operationBtns.forEach(function(btn) {
 
   if (btn.value === "=") {
-
     // perform calculation if equals button clicked
     btn.addEventListener("click", function() {
       if (nums.length && currentNum !== "") nums.push(Number(currentNum));
@@ -186,7 +166,6 @@ operationBtns.forEach(function(btn) {
       }
     });
   } else {
-
     // update symbol when operation button clicked, perform calculation if nums array is full
     btn.addEventListener("click", function() {
 
@@ -204,8 +183,10 @@ operationBtns.forEach(function(btn) {
   }
 });
 
+// clear screen and calculator data if clear button clicked
 clearBtn.addEventListener("click", () => resetCalculator());
 
+// change sign of current num and display num
 changeSignBtn.addEventListener("click", function() {
   currentNum = `${-Number(currentNum)}`;
   const updatedDisplayContent = display.textContent.startsWith("-") ? display.textContent.slice(1) : "-" + display.textContent;
@@ -213,4 +194,5 @@ changeSignBtn.addEventListener("click", function() {
   formatFontSize();
 });
 
+// toggle power on calculator
 powerBtn.addEventListener("click", () => powerOn ? powerOffCalculator() : powerOnCalculator());
