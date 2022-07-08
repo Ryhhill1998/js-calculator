@@ -50,9 +50,6 @@ const updateAfterCalc = result => {
 // update calculator screen with inputted values and results
 const updateDisplay = value => display.textContent = value;
 
-// highlight buttons clicked
-const highlightBtnClicked = btn => btn.classList.add("operation-clicked");
-
 // click animation
 const buttonClicked = btn => {
   btn.classList.add("button-clicked");
@@ -77,13 +74,20 @@ const formatFontSize = () => {
 // display number functio1n
 const displayNum = num => {
   const stringNum = String(num);
-  let reducedNum = stringNum.length > 9 ? reduceNumber(num) : stringNum;
-  if (!reducedNum.includes("e")) {
-    const options = {
-      minimumSignificantDigits: reducedNum.replace(".", "").replace("-", "").length,
-    };
-    reducedNum = new Intl.NumberFormat("en-GB", options).format(reducedNum);
+  let reducedNum = +num;
+
+  if (stringNum === ".") {
+    reducedNum = "0.";
+  } else if (!stringNum.endsWith(".") && !stringNum.endsWith("0")) {
+    reducedNum = stringNum.length > 9 ? reduceNumber(reducedNum) : stringNum;
+    if (!reducedNum.includes("e")) {
+      const options = {
+        minimumSignificantDigits: reducedNum.replace(".", "").replace("-", "").length,
+      };
+      reducedNum = new Intl.NumberFormat("en-GB", options).format(reducedNum);
+    }
   }
+
   updateDisplay(reducedNum);
   formatFontSize();
 };
@@ -136,10 +140,12 @@ const powerOnCalculator = () => {
 
 // removes highlight from all buttons when another button is clicked
 calcBtns.addEventListener("click", e => {
+  const btn = e.target;
   operationBtns.forEach(function(opBtn) {
-    opBtn.classList.remove("operation-clicked");
+    if (opBtn !== btn.closest(".button")) opBtn.classList.remove("operation-clicked");
   });
-  buttonClicked(e.target);
+
+  if (!btn.closest(".operation")) buttonClicked(btn);
 });
 
 // update nums array and display when numbers are clicked
@@ -152,50 +158,34 @@ numBtns.addEventListener("click", e => {
   if (heldResult !== undefined && nums.length === 0) {
     currentNum = numClicked;
     heldResult = undefined;
-  } else if (numClicked === ".") {
-    if (currentNum.includes(".")) return;
-    if (currentNum === "") {
-      currentNum = "0.";
-    } else {
-      currentNum += numClicked;
-    }
-    return updateDisplay(currentNum);
   } else {
+    if (numClicked === "." && currentNum.includes(".")) return;
     currentNum += numClicked;
-    displayNum(+currentNum);
+    displayNum(currentNum);
   }
 
 });
 
 
 // perform calculator operations
-operationBtns.forEach(function(btn) {
+opBtns.addEventListener("click", e => {
+  const btn = e.target.closest(".button");
+  const operation = btn.value;
 
-  if (btn.value === "=") {
-    // perform calculation if equals button clicked
-    btn.addEventListener("click", function() {
-      if (nums.length && currentNum !== "") nums.push(Number(currentNum));
-      if (nums.length === 2) {
-        performCalculation(this.value);
-      }
-    });
+  if (operation === "=") {
+    if (nums.length && currentNum !== "") nums.push(+currentNum);
   } else {
-    // update symbol when operation button clicked, perform calculation if nums array is full
-    btn.addEventListener("click", function() {
-
-      highlightBtnClicked(btn);
-
-      if (currentNum !== "") nums.push(Number(currentNum));
+    if (currentNum !== "") {
+      btn.classList.add("operation-clicked");
+      nums.push(+currentNum);
       currentNum = "";
-      const opClicked = this.value;
-
-      if (nums.length === 2) {
-        performCalculation(opClicked);
-      }
-      symbol = opClicked;
-    });
+    }
   }
+
+  if (nums.length === 2) performCalculation(operation);
+  symbol = operation;
 });
+
 
 // clear screen and calculator data if clear button clicked
 clearBtn.addEventListener("click", () => resetCalculator());
