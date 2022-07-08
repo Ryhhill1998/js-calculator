@@ -14,9 +14,16 @@ const operationMap = new Map([
 
 // ---------- DOM OBJECTS ---------- //
 const display = document.querySelector(".display");
+
+const calcBtns = document.querySelector(".calculator-buttons");
+const funcBtns = document.querySelector(".function-btns");
+const numBtns = document.querySelector(".number-btns");
+const opBtns = document.querySelector(".operation-btns");
+
 const allBtns = document.querySelectorAll("button");
 const numberBtns = document.querySelectorAll(".number");
 const operationBtns = document.querySelectorAll(".operation");
+
 const clearBtn = document.getElementById("clear");
 const changeSignBtn = document.getElementById("change-sign");
 const powerBtn = document.getElementById("power");
@@ -46,6 +53,12 @@ const updateDisplay = value => display.textContent = value;
 // highlight buttons clicked
 const highlightBtnClicked = btn => btn.classList.add("operation-clicked");
 
+// click animation
+const buttonClicked = btn => {
+  btn.classList.add("button-clicked");
+  setTimeout(() => btn.classList.remove("button-clicked"), 100);
+};
+
 // reduce number by rounding if it is too large to be displayed properly
 const reduceNumber = num => {
   const integers = String(num).split(".")[0];
@@ -64,9 +77,7 @@ const formatFontSize = () => {
 // display number functio1n
 const displayNum = num => {
   const stringNum = String(num);
-  console.log(stringNum.length > 9);
   let reducedNum = stringNum.length > 9 ? reduceNumber(num) : stringNum;
-  console.log(reducedNum);
   if (!reducedNum.includes("e")) {
     const options = {
       minimumSignificantDigits: reducedNum.replace(".", "").replace("-", "").length,
@@ -124,35 +135,38 @@ const powerOnCalculator = () => {
 // ---------- BUTTON EVENT LISTENERS ---------- //
 
 // removes highlight from all buttons when another button is clicked
-allBtns.forEach(function(btn) {
-  btn.addEventListener("click", function() {
-    operationBtns.forEach(function(opBtn) {
-      opBtn.classList.remove("operation-clicked");
-    });
-    this.classList.add("button-clicked");
-    setTimeout(() => this.classList.remove("button-clicked"), 100);
+calcBtns.addEventListener("click", e => {
+  operationBtns.forEach(function(opBtn) {
+    opBtn.classList.remove("operation-clicked");
   });
+  buttonClicked(e.target);
 });
 
 // update nums array and display when numbers are clicked
-numberBtns.forEach(function(btn) {
-  btn.addEventListener("click", function() {
-    const numWithoutDecPlace = currentNum.replace(".", "");
-    if (numWithoutDecPlace.length === 9) return;
+numBtns.addEventListener("click", e => {
+  const numWithoutDecPlace = currentNum.replace(".", "");
+  if (numWithoutDecPlace.length === 9) return;
 
-    const numClicked = this.textContent;
+  const numClicked = e.target.textContent;
 
-    if (heldResult !== undefined && nums.length === 0) {
-      currentNum = numClicked;
-      heldResult = undefined;
+  if (heldResult !== undefined && nums.length === 0) {
+    currentNum = numClicked;
+    heldResult = undefined;
+  } else if (numClicked === ".") {
+    if (currentNum.includes(".")) return;
+    if (currentNum === "") {
+      currentNum = "0.";
     } else {
-      if (numClicked === "." && currentNum.includes(".")) return;
       currentNum += numClicked;
     }
-
+    return updateDisplay(currentNum);
+  } else {
+    currentNum += numClicked;
     displayNum(+currentNum);
-  });
+  }
+
 });
+
 
 // perform calculator operations
 operationBtns.forEach(function(btn) {
